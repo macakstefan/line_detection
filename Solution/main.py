@@ -6,7 +6,9 @@ from calibration import ChessboardCameraCalibrator
 from binary_converter import ImageBinaryConverter
 import matplotlib.pyplot as plt
 from lines_detector import LineDetector
+from cv_to_human_vision import CVToHumanVision
 
+image_path = "test_images/test2.jpg"
 
 if __name__ == '__main__':
     calibrator = ChessboardCameraCalibrator(9,6)
@@ -25,7 +27,7 @@ if __name__ == '__main__':
     '''
     #use color transforms, gradients, etc., to create a thresholded binary image
     binary_converter = ImageBinaryConverter()
-    img = cv2.imread("test_images/test5.jpg")
+    img = cv2.imread(image_path)
     img = binary_converter.convert_image_to_binary(img)
 
     #get img size 
@@ -43,13 +45,16 @@ if __name__ == '__main__':
     top_right = (740,460)
     bottom_left = (260,680)
     bottom_right = (1220,680)
-    #transformation matrix
-    src = np.float32([top_left, top_right, bottom_left, bottom_right])
-    dst = np.float32([[0,0], [1280,0], [0,720], [1280,720]])
-    M = cv2.getPerspectiveTransform(src, dst)
+
+    roi = np.float32([top_left, top_right, bottom_left, bottom_right])
+    new_dim = np.float32([[0,0], [1280,0], [0,720], [1280,720]])
+    M = cv2.getPerspectiveTransform(roi, new_dim)
     img = cv2.warpPerspective(img, M, img_size, flags=cv2.INTER_LINEAR)
 
 
     ld = LineDetector(img, 20, 10, 10)
-    ld.detect(img)
+    poly_left, poly_right =ld.detect(img)
+    converter = CVToHumanVision(image_path, roi, new_dim)
+    converter.draw_lines_on_original_image(img, poly_left, poly_right)
+
 
