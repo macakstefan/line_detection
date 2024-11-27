@@ -11,10 +11,11 @@ from birds_perspective_converter import BirdsPerspectiveConverter
 
 
 print("Current working dir:", os.getcwd())
-IMAGE_PATH = "test_images/test3.jpg"
-VIDEO_PATH = "C:\\Users\\macak\\Documents\\master\\computer vision\\Zadatak\\test_videos\\project_video02.mp4"
+IMAGE_PATH = "test_images/test6.jpg"
+VIDEO_PATH = "C:\\Users\\macak\\Documents\\master\\computer vision\\Zadatak\\test_videos\\challenge03.mp4"
 CALIBRATE = False
-USE_IMAGE= True
+# USE_IMAGE= True
+USE_IMAGE= False
 DEBUG = True
 
 def do(img, calibrate=False):
@@ -38,13 +39,14 @@ def do(img, calibrate=False):
     img = binary_converter.convert_image_to_binary(img)
     print("Binary image shape:", img.shape)
     birds_perspective = BirdsPerspectiveConverter(img, DEBUG)
-    img = birds_perspective.transform_to_birds_perspective()
+    img, roi, new_dim = birds_perspective.transform_to_birds_perspective()
 
    
     try:
-        ld = LineDetector(img, 20, 10, 10)
-        poly_left, poly_right =ld.detect(img)
-        converter = CVToHumanVision(IMAGE_PATH, roi, new_dim)
+        ld = LineDetector(img, 20, 10, 10, DEBUG)
+        poly_left, poly_right =ld.detect()      
+        converter = CVToHumanVision(roi, new_dim, DEBUG)
+        converter.draw_lines(poly_left, poly_right, img)
         converter.draw_lines_on_original_image(img, poly_left, poly_right, original_img)
     except Exception as e:
         print("Errroror:", e)
@@ -58,6 +60,7 @@ if __name__ == '__main__':
     if USE_IMAGE:
         do(img)
         cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
     else:
         video = cv2.VideoCapture(VIDEO_PATH)
