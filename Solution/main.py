@@ -12,25 +12,29 @@ from birds_perspective_converter import BirdsPerspectiveConverter
 
 print("Current working dir:", os.getcwd())
 IMAGE_PATH = "test_images/test6.jpg"
-VIDEO_PATH = "C:\\Users\\macak\\Documents\\master\\computer vision\\Zadatak\\test_videos\\challenge03.mp4"
+VIDEO_PATH = "C:\\Users\\macak\\Documents\\master\\computer vision\\Zadatak\\test_videos\\project_video02.mp4"
 CALIBRATE = False
-# USE_IMAGE= True
+USE_IMAGE= True
 USE_IMAGE= False
 DEBUG = True
 
 def do(img, calibrate=False):
-    original_img = img.copy()
+    calibrator = ChessboardCameraCalibrator(9,6)
+
     if calibrate:
-        calibrator = ChessboardCameraCalibrator(9,6)
 
-        #calibrate the camera
         #obtain camera matrix(mtx) and distortion coefficients(dist)
-        mtx, dist = calibrator.calibrate("Zadatak/camera_cal")
+        mtx, dist = calibrator.get_calibration_params("camera_cal/*.jpg")
+        np.savez('Solution/calibration_data.npz', mtx=mtx, dist=dist)
 
-        for img_name in os.listdir("Zadatak/camera_cal"):
-            img_path = os.path.join("Zadatak/camera_cal", img_name)
-            img = cv2.imread(img_path)
-            calibrator.undistort_image(img, mtx, dist, os.path.join("Zadatak/Solution/output_undistorted_images", img_name))
+        calibrator.undistort_all_images_in_folder('Solution/calibration_data.npz',
+                                   'camera_cal',
+                                   'Solution/output_undistorted_images')
+
+    
+    img = calibrator.undistort_image('Solution/calibration_data.npz', img)
+    original_img = img.copy()
+
 
     #use color transforms, gradients, etc., to create a thresholded binary image
     binary_converter = ImageBinaryConverter()
