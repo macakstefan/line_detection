@@ -3,6 +3,9 @@ import cv2
 import glob
 import os
 
+termination_criteria = (cv2.TERM_CRITERIA_MAX_ITER + cv2.TERM_CRITERIA_EPS, 30, 0.001)
+
+
 class ChessboardCameraCalibrator:
     def __init__(self, cb_cols, cb_rows, debug=False):
         self.cb_cols = cb_cols
@@ -23,15 +26,15 @@ class ChessboardCameraCalibrator:
         for image_path in chess_boards_images:
             img = cv2.imread(image_path)
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            if(self.debug):
-                cv2.imshow('gray', gray)
+            # if(self.debug):
+                # cv2.imshow('gray', gray)
+
             
             # Find the chess board corners
             ret, corners = cv2.findChessboardCorners(gray, (self.cb_rows, self.cb_cols))
 
             if ret == True:
                 # Refine the corner position
-                termination_criteria = (cv2.TERM_CRITERIA_MAX_ITER + cv2.TERM_CRITERIA_EPS, 30, 0.001)
                 corners = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), termination_criteria)
 
                 self.objectPointsArray.append(self.objp)
@@ -40,14 +43,12 @@ class ChessboardCameraCalibrator:
                     # Draw the corners on the image
                     cv2.drawChessboardCorners(img, (self.cb_rows, self.cb_cols), corners, ret)
                     # Display the image
-                    cv2.imshow(image_path, img)
+                    # cv2.imshow(image_path, img)
+                 
 
             else:
                 print("All Corners not found for image:", image_path)
 
-            if self.debug:
-                cv2.waitKey(1000)
-                cv2.destroyAllWindows()
 
         ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(self.objectPointsArray, self.imgPointsArray, gray.shape[::-1], None, None)
         return  mtx, dist
