@@ -19,7 +19,7 @@ class LineDetector:
         # if self.debug:
         #     plt.figure()
         #     plt.plot(histogram)
-        #     plt.show()   
+        #     plt.show()
 
         return np.argmax(histogram)
        
@@ -29,14 +29,11 @@ class LineDetector:
         left_line_indexes = {"x": [], "y": []}
         right_line_indexes = {"x": [], "y": []}
 
-
-
         no_of_windows = 10 
         window_height = img.shape[0]//no_of_windows
-        window_width = 75
+        window_width = 80
         min_num_of_pixels_for_recentre = 5
-
-        
+  
         #callc histogram of window.
 
         left_window = img[:img.shape[0], :img.shape[1]//2]
@@ -67,7 +64,8 @@ class LineDetector:
                     nonzerox = np.array([x[0][0] for x in nonzero]) + (base - window_width)
                     nonzeroy = np.array([x[0][1] for x in nonzero]) + (window_height * i)
                     output["x"].extend(nonzerox)
-                    output["y"].extend(nonzeroy)           
+                    output["y"].extend(nonzeroy)
+                    
 
                 if len(nonzerox) > min_num_of_pixels_for_recentre:
                     # print("nonzerox", nonzerox)
