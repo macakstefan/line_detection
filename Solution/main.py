@@ -13,13 +13,14 @@ from birds_perspective_converter import BirdsPerspectiveConverter
 print("Current working dir:", os.getcwd())
 IMAGE_PATH = "test_images/test6.jpg"
 VIDEO_PATH = "C:\\Users\\macak\\Documents\\master\\computer vision\\Zadatak\\test_videos\\project_video02.mp4"
+# CALIBRATE = True
 CALIBRATE = False
 USE_IMAGE= True
 USE_IMAGE= False
 DEBUG = True
 
 def do(img, calibrate=False):
-    calibrator = ChessboardCameraCalibrator(9,6)
+    calibrator = ChessboardCameraCalibrator(9,6, DEBUG)
 
     if calibrate:
 
@@ -28,11 +29,12 @@ def do(img, calibrate=False):
         np.savez('Solution/calibration_data.npz', mtx=mtx, dist=dist)
 
         calibrator.undistort_all_images_in_folder('Solution/calibration_data.npz',
-                                   'camera_cal',
-                                   'Solution/output_undistorted_images')
+                                    'camera_cal',
+                                    'Solution/output_undistorted_images')
 
     
     img = calibrator.undistort_image('Solution/calibration_data.npz', img)
+    print("Undistorted image shape:", img.shape)
     original_img = img.copy()
 
 
@@ -42,7 +44,7 @@ def do(img, calibrate=False):
 
     img = binary_converter.convert_image_to_binary(img)
     print("Binary image shape:", img.shape)
-    birds_perspective = BirdsPerspectiveConverter(img, DEBUG)
+    birds_perspective = BirdsPerspectiveConverter(img,USE_IMAGE, DEBUG)
     img, roi, new_dim = birds_perspective.transform_to_birds_perspective()
 
    
@@ -62,7 +64,7 @@ if __name__ == '__main__':
     img = cv2.imread(IMAGE_PATH)
     # roi(img)
     if USE_IMAGE:
-        do(img)
+        do(img, CALIBRATE)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
@@ -76,7 +78,7 @@ if __name__ == '__main__':
             ret, frame = video.read()
             
             if ret:
-                do(frame)
+                do(frame, CALIBRATE)
                 # generate_roi(frame)
                 # Display the resulting frame
                 # cv2.imshow('Frame', frame)
