@@ -1,25 +1,15 @@
-
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
 
 class LineDetector:
-    def __init__(self, img, window_size, window_stride, threshold, debug=False):
-        self.window_size = window_size
-        self.window_stride = window_stride
-        self.threshold = threshold
+    def __init__(self, img, debug=False):
         self.img = img
-        self.y = 0
-        self.x = 1
         self.debug = debug
 
     def calculate_histogram(self, img):
         histogram = np.sum(img, axis=0)
-        # if self.debug:
-        #     plt.figure()
-        #     plt.plot(histogram)
-        #     plt.show()
 
         return np.argmax(histogram)
        
@@ -31,11 +21,9 @@ class LineDetector:
 
         no_of_windows = 10 
         window_height = img.shape[0]//no_of_windows
-        window_width = 80
+        window_width = 100
         min_num_of_pixels_for_recentre = 5
   
-        #callc histogram of window.
-
         left_window = img[:img.shape[0], :img.shape[1]//2]
         leftx_base = self.calculate_histogram(left_window)
         right_window = img[:img.shape[0], img.shape[1]//2:]
@@ -54,10 +42,7 @@ class LineDetector:
                 window = window[window_height*i:window_height*(i+1), window_x_border[0]:window_x_border[1]]
                 #use cv2 nonzeros to get all nonzero pixels in window
                 nonzero = cv2.findNonZero(window)
-                # print("nonzero is:", nonzero)
-                # nonzero = window.nonzero()
                 
-                # nonzerox = np.array(nonzero[self.x])
                 if nonzero is None:
                     nonzerox = []
                 else:
@@ -68,13 +53,8 @@ class LineDetector:
                     
 
                 if len(nonzerox) > min_num_of_pixels_for_recentre:
-                    # print("nonzerox", nonzerox)
                     base = int(np.mean(nonzerox))
-                    # print("base", base)
-                else:
-                    # print("nonzerox", len(nonzerox))
-                    print("base", base)
-
+              
                 if self.debug:
                     rectangle = cv2.rectangle(img, (base-window_width, window_height*i), (base+window_width, window_height*(i+1)), (255, 0, 0), 2)
                     cv2.imshow('Rectangle', rectangle)
