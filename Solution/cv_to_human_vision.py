@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 import copy
 
 class CVToHumanVision():
@@ -34,8 +33,7 @@ class CVToHumanVision():
             cv2.imshow('Lanes', img)
 
 
-    def draw_lines_on_original_image(self, img, poly_left, poly_right, original_image):
-    
+    def draw_lines_on_original_image(self, img, poly_left, poly_right, original_image, M):
         img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
         y_values = np.linspace(0, img.shape[0] - 1, img.shape[0])
 
@@ -57,10 +55,21 @@ class CVToHumanVision():
 
 
         cv2.fillPoly(polygon_img, np.int_([points]), (255, 255, 0))
+        cv2.imshow('Polygon', polygon_img)
+
+        # Draw the lines on the polygon image
+        for i in range(len(y_values) - 1):
+            cv2.line(polygon_img, (left_x_values[i], y_values[i]), (left_x_values[i + 1], y_values[i + 1]), (255, 0, 0), 20)
+            cv2.line(polygon_img, (right_x_values[i], y_values[i]), (right_x_values[i + 1], y_values[i + 1]), (0, 0, 255), 20)
+
 
         M_inv = cv2.getPerspectiveTransform(self.new_dim, self.roi)
+
+        cv2.imshow("Original Image", original_image)
         warped_polygon = cv2.warpPerspective(polygon_img, M_inv, (original_image.shape[1], original_image.shape[0]))
+        cv2.imshow('Warped Polygon', warped_polygon)
         result = cv2.addWeighted(original_image, 1, warped_polygon, 0.3, 0)
 
         # # # Display the image
         cv2.imshow('Lane Lines', result)
+        return result
