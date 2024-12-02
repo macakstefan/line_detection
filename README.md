@@ -1,3 +1,5 @@
+Go to Solution folder.
+
 # line_detection
 How to use :
 **#Choose which image or video to process**
