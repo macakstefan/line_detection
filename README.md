@@ -1,4 +1,7 @@
-Go to Solution folder.
+activate venv (venv\Scripts\activate.bat)
+cd Solution
+py main.py 
+
 
 # line_detection
 How to use :
