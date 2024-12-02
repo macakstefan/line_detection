@@ -38,7 +38,7 @@ You're reading it!
 ### Camera Calibration
 
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
-Calibration is done in calibration.py file. 
+Calibration is done in Solution/calibration.py file. 
 For every chess board image provided I have used findChessboardCorners. Number of corners given is 54 (9*6).
 If 54 corners is found return is true. Then corners are beiing refined , and they are all sent to calibrateCamera which produces matrix and distorition coefficients. 
 All Corners not found for image: camera_cal\calibration1.jpg ,camera_cal\calibration4.jpg ,camera_cal\calibration5.jpg, because 53 is seen on image .
@@ -69,12 +69,12 @@ all pixels have higher values.)
 
 Then canny edges detection is done.
 
-binary_converter.py class in code.
+Solution/binary_converter.py class in code.
 
 ![alt text](output/binary.png)
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
-Perspective transform has been done ini birds_perspective_converter.py
+Perspective transform has been done in Solution/birds_perspective_converter.py
 
 First I have selected regiion of interest. This was done experimentaly by drawing a trapezoid. 
 Then new dimensions are specified, in order to fit the whole trapezoiid maximum is taken from top and bottom width for right sided dots.
@@ -83,7 +83,7 @@ Then get perspective transform and warp are done.
 ![alt text](output/birds_perspective.PNG)
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
-lines_detector.py detects lines. 
+Solution/lines_detector.py detects lines. 
 Detection is performed with sliding window technique.(First I tried hough but it was unsucessful)
 
 I create windows, left windows are for left lane and right for right lane. 
@@ -95,7 +95,7 @@ base = int(np.mean(nonzerox)) - recenter to mean of nonzero pixels .
 
 All nonzeros are added to output and it is used in polyfit function that fits their positions by polinomial.
 
-After that in cv_to_human_vision.py - lines and poligon are drawn on original image .
+After that in Solution/cv_to_human_vision.py - lines and poligon are drawn on original image .
 roi, new_dim and M (matrix) from transforming to birds perspective are now used in inverse  
 way in order to put them back to original image. 
 Warp is done and result merged to original.
