@@ -9,9 +9,9 @@ from birds_perspective_converter import BirdsPerspectiveConverter
 
 
 print("Current working dir:", os.getcwd())
-IMAGE_PATH = "test_images/test6.jpg"
-VIDEO_PATH = "test_videos\\project_video01.mp4"
-# CALIBRATE = True
+IMAGE_PATH = "../test_images/test6.jpg"
+VIDEO_PATH = "../test_videos/project_video01.mp4"
+#CALIBRATE = True
 CALIBRATE = False
 # USE_IMAGE if set to True, will process the image, otherwise it will process the video.
 USE_IMAGE= True
@@ -23,15 +23,15 @@ def do(img, calibrate=False):
 
     if calibrate:
         #obtain camera matrix(mtx) and distortion coefficients(dist)
-        mtx, dist = calibrator.get_calibration_params("camera_cal/*.jpg")
-        np.savez('Solution/calibration_data.npz', mtx=mtx, dist=dist)
+        mtx, dist = calibrator.get_calibration_params("../camera_cal/*.jpg")
+        np.savez('calibration_data.npz', mtx=mtx, dist=dist)
 
-        calibrator.undistort_all_images_in_folder('Solution/calibration_data.npz',
-                                    'camera_cal',
-                                    'Solution/output_undistorted_images')
+        calibrator.undistort_all_images_in_folder('calibration_data.npz',
+                                    '../camera_cal/',
+                                    'output_undistorted_images')
     
-    original_img = calibrator.undistort_image('Solution/calibration_data.npz', img)
-    # img = calibrator.undistort_image('Solution/calibration_data.npz', img)
+    #original_img = calibrator.undistort_image('calibration_data.npz', img)
+    # img = calibrator.undistort_image('calibration_data.npz', img)
 
     original_img = img.copy()
 
