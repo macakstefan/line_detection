@@ -128,5 +128,11 @@ Videos are in output folder.
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-TODO: Add your text here!!!
+- As I have already mentioned , I had a problem finding generic trapezoid after calibratiion. I might be that calibration parameters are not good, or warp params are not
+  good , but didn't find the solution .
+
+- Sliding windows base not ok. First blok takes x coordinate of highest point in histogram, but when line is curved it can happen than block is just black.
+
+-  Conversion to binary image made me lose a lot of useful information. Maybe I should have changed perspective to birds view and then used Sobel by x axis.
+  On challenges and difficult images I don't have enough of information in order to detect where the lines at.
 
